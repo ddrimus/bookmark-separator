@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bookmark Separator</title>
+
+<!-- Dynamic favicon element updated by JavaScript -->
+<link rel="icon" type="image/svg+xml" id="favicon">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>BOOKMARK SEPARATOR</h1>
+<p>Drag these to your bookmarks bar to create visual separators.</p>
+
+<!-- Container with draggable separator elements -->
+<div class="separator-container">
+    <div class="separator-box">
+        <a href="?vert" class="separator" data-type="vert"></a>
+        <label>Vertical separator</label>
+    </div>
+    <div class="separator-box">
+        <a href="?horz" class="separator" data-type="horz"></a>
+        <label>Horizontal separator</label>
+    </div>
+</div>
+
+<!-- Documentation section explaining the mechanism -->
+<details open>
+<summary>How it works</summary>
+<p>Drag a separator to your bookmarks bar.</p>
+<p>
+Each drag generates a unique URL with a random identifier, allowing<br>
+you to create multiple separators of the same type without browser<br>
+conflicts.
+</p>
+<p>
+The page displays ?vert or ?horz in the URL with a unique hash fragment.<br>
+When you drag, the page's favicon is updated and cached by the browser<br>
+for that specific URL pattern.
+</p>
+<p>
+When switching between separator types (vertical to horizontal or vice<br>
+versa), the page generates a final unique URL for the previous type<br>
+before switching. This ensures already-created bookmarks maintain their<br>
+correct icons.
+</p>
+</details>
+
+<!-- Credits and source information -->
+<details open>
+<summary>Credits</summary>
+<p>
+If you find this useful, clone it and host it yourself!<br>
+Relying on a single hosted instance is fragile. Decentralization is good.
+</p>
+<p>
+Source code: <a href="https://github.com/ddrimus/bookmark-separator" target="_blank">https://github.com/ddrimus/bookmark-separator</a>
+</p>
+</details>
+<script src="script.js"></script>
+</body>
+</html>
