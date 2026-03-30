@@ -44,7 +44,7 @@ jobs:
 
       # Configure GitHub Pages settings
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       # Upload minified files as Pages artifact
       - name: Upload Pages artifact
@@ -55,4 +55,4 @@ jobs:
       # Deploy artifact to GitHub Pages
       - name: Deploy to Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
