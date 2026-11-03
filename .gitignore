@@ -1,6 +1,16 @@
+# Node.js dependencies
+node_modules/
+
+# Build output from npm run build
+dist/
+
 # Environment files
 .env
 
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Test reports
+test-results/
+playwright-report/
