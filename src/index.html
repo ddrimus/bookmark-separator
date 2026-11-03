@@ -3,47 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A minimal tool to add separators to your bookmarks bar in Chrome, Edge and Brave, without any extension.">
+<meta name="color-scheme" content="light dark">
+
+<!-- Only files from this site and data: favicons are allowed; GitHub Pages can't set headers, so the policy lives here -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Bookmark Separator</title>
 
-<!-- Dynamic favicon element updated by JavaScript -->
-<link rel="icon" type="image/svg+xml" id="favicon">
+<!-- Link preview card for social networks and chat apps; crawlers need absolute URLs, so self-hosters should point these at their own copy -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bookmark Separator">
+<meta property="og:description" content="Add dividers to your bookmarks bar in Chrome, Edge and Brave. No extension needed.">
+<meta property="og:url" content="https://ddrimus.github.io/bookmark-separator/">
+<meta property="og:image" content="https://ddrimus.github.io/bookmark-separator/images/social-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bookmark Separator: vertical, horizontal, double, dot and blank separators on a bookmarks bar">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Dynamic favicon element updated by JavaScript, starts as the vertical icon so the page has one without JavaScript -->
+<link rel="icon" type="image/svg+xml" id="favicon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cline%20x1%3D%228%22%20x2%3D%228%22%20y2%3D%2216%22%20stroke%3D%22%23a7a09f%22%2F%3E%3C%2Fsvg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<header>
 <h1>BOOKMARK SEPARATOR</h1>
-<p>Drag these to your bookmarks bar to create visual separators.</p>
+<p class="tagline">Add dividers to your bookmarks bar. No extension needed.</p>
+</header>
 
-<!-- Container with draggable separator elements -->
-<div class="separator-container">
+<!-- Shown by JavaScript when the page is opened from a separator bookmark, the visit itself puts its icon back -->
+<p class="notice restored" id="restored" role="status" hidden>Separator icon restored, you can close this tab.</p>
+
+<!-- Without JavaScript the separators still drag, but every one gets the same URL and the vertical icon -->
+<noscript>
+<p class="notice">JavaScript is turned off. Turn it on so every separator gets its own link and icon.</p>
+</noscript>
+
+<!-- Draggable separators, one per style; the glyph comes from CSS so the dragged link has no text -->
+<main>
+<div class="separator-grid">
     <div class="separator-box">
-        <a href="?vert" class="separator" data-type="vert"></a>
-        <label>Vertical separator</label>
+        <a href="?vert" class="separator" data-type="vert" aria-label="Vertical separator (drag to bookmarks bar)"></a>
+        <span class="separator-caption">vertical</span>
+        <span class="separator-use">on the bar</span>
     </div>
     <div class="separator-box">
-        <a href="?horz" class="separator" data-type="horz"></a>
-        <label>Horizontal separator</label>
+        <a href="?horz" class="separator" data-type="horz" aria-label="Horizontal separator (drag to bookmarks bar)"></a>
+        <span class="separator-caption">horizontal</span>
+        <span class="separator-use">in folders</span>
+    </div>
+    <div class="separator-box">
+        <a href="?double" class="separator" data-type="double" aria-label="Double separator (drag to bookmarks bar)"></a>
+        <span class="separator-caption">double</span>
+        <span class="separator-use">strong break</span>
+    </div>
+    <div class="separator-box">
+        <a href="?dot" class="separator" data-type="dot" aria-label="Dot separator (drag to bookmarks bar)"></a>
+        <span class="separator-caption">dot</span>
+        <span class="separator-use">subtle break</span>
+    </div>
+    <div class="separator-box">
+        <a href="?blank" class="separator" data-type="blank" aria-label="Blank spacer (drag to bookmarks bar)"></a>
+        <span class="separator-caption">blank spacer</span>
+        <span class="separator-use">empty gap</span>
     </div>
 </div>
+
+<!-- Step-by-step guide; the shortcut keys are swapped for macOS by JavaScript -->
+<ol class="steps">
+    <li>
+        <span class="step-title">Show the bookmarks bar</span>
+        <span class="step-detail">Press <kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> in Chrome, Edge or Brave.</span>
+    </li>
+    <li>
+        <span class="step-title">Drag a separator onto the bar</span>
+        <span class="step-detail">Drop it between the bookmarks you want to split.</span>
+    </li>
+    <li>
+        <span class="step-title">Hide the name if one shows up</span>
+        <span class="step-detail">Right-click the new bookmark, choose <strong>Edit</strong>, clear the name and save, so only the icon is left.</span>
+    </li>
+    <li>
+        <span class="step-title">Repeat as often as you like</span>
+        <span class="step-detail">Every drag creates a new unique link, so separators never replace each other.</span>
+    </li>
+</ol>
+
+<!-- Repair tip for separators that lost their icon, for example after clearing browsing history -->
+<p class="tip"><strong>Icon missing?</strong> Click the separator once. The page opens and puts its icon back, then you can close the tab.</p>
+</main>
 
 <!-- Documentation section explaining the mechanism -->
 <details open>
 <summary>How it works</summary>
-<p>Drag a separator to your bookmarks bar.</p>
 <p>
-Each drag generates a unique URL with a random identifier, allowing<br>
-you to create multiple separators of the same type without browser<br>
+Each drag generates a unique URL with a random identifier, allowing
+you to create multiple separators of the same style without browser
 conflicts.
 </p>
 <p>
-The page displays ?vert or ?horz in the URL with a unique hash fragment.<br>
-When you drag, the page's favicon is updated and cached by the browser<br>
-for that specific URL pattern.
+The page shows the style in the URL (for example ?vert or ?dot) with a
+unique hash fragment. When you drag, the page's favicon is updated and
+cached by the browser for that specific URL.
 </p>
 <p>
-When switching between separator types (vertical to horizontal or vice<br>
-versa), the page generates a final unique URL for the previous type<br>
-before switching. This ensures already-created bookmarks maintain their<br>
-correct icons.
+When switching between styles, the page first moves to a final unique
+URL for the previous style before switching. This ensures bookmarks you
+already created keep their correct icons.
 </p>
 </details>
 
@@ -51,11 +117,14 @@ correct icons.
 <details open>
 <summary>Credits</summary>
 <p>
-If you find this useful, clone it and host it yourself!<br>
-Relying on a single hosted instance is fragile. Decentralization is good.
+This copy runs on GitHub Pages for convenience. Your separators don't
+depend on it: once created, they keep their icon.
 </p>
 <p>
-Source code: <a href="https://github.com/ddrimus/bookmark-separator" target="_blank">https://github.com/ddrimus/bookmark-separator</a>
+Want to be fully independent? Host your own copy, it's one static folder.
+</p>
+<p>
+Source code: <a href="https://github.com/ddrimus/bookmark-separator" target="_blank" rel="noopener">https://github.com/ddrimus/bookmark-separator</a>
 </p>
 </details>
 <script src="script.js"></script>

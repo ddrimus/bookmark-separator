@@ -1,45 +1,86 @@
+/* Theme colors */
+:root {
+    --bg: #fff;
+    --fg: #000;
+    --muted: #666;
+    --border: #ccc;
+    --hover: #f0f0f0;
+    --active: #e0e0e0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #111;
+        --fg: #eee;
+        --muted: #999;
+        --border: #444;
+        --hover: #222;
+        --active: #333;
+    }
+}
+
 /* Base layout */
 body {
     font-family: monospace;
-    max-width: 800px;
+    max-width: 720px;
     margin: 40px auto;
-    padding: 20px;
-    background: #fff;
-    color: #000;
+    padding: 0 20px;
+    background: var(--bg);
+    color: var(--fg);
     line-height: 1.6;
 }
 
 h1 {
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: normal;
-    margin-bottom: 30px;
+    letter-spacing: 0.15em;
+    margin: 0;
 }
 
-/* Separator elements */
-.separator-container {
-    display: flex;
-    gap: 40px;
+.tagline {
+    margin: 4px 0 0;
+    color: var(--muted);
+}
+
+/* Notices above the separators, for a restored icon or JavaScript turned off */
+.notice {
+    margin: 24px 0 0;
+    padding: 10px 14px;
+    border: 1px dashed var(--fg);
+}
+
+.restored {
+    border-style: solid;
+}
+
+/* Separator grid, wraps to fewer columns on narrow screens */
+.separator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 24px;
     margin: 40px 0;
-    justify-content: center;
 }
 
 .separator-box {
     text-align: center;
 }
 
-.separator {
-    display: inline-block;
-    width: 120px;
-    height: 40px;
-    border: 1px solid #000;
-    cursor: move;
-    font-size: 24px;
-    line-height: 40px;
+/* Separator elements, link states set explicitly so :visited never recolors them */
+.separator,
+.separator:link,
+.separator:visited {
+    display: block;
+    height: 64px;
+    border: 1px solid var(--fg);
+    cursor: grab;
+    font-size: 28px;
+    line-height: 64px;
     text-align: center;
     user-select: none;
-    background: #fff;
+    background: var(--bg);
     text-decoration: none;
-    color: #000;
+    color: var(--fg);
+    transition: background 0.1s, transform 0.1s;
 }
 
 .separator[data-type="vert"]::before {
@@ -50,24 +91,111 @@ h1 {
     content: '—';
 }
 
+.separator[data-type="double"]::before {
+    content: '‖';
+}
+
+.separator[data-type="dot"]::before {
+    content: '•';
+}
+
+/* Blank spacer has no glyph, a dashed border shows it is an empty slot */
+.separator[data-type="blank"] {
+    border-style: dashed;
+}
+
 .separator:hover {
-    background: #f0f0f0;
+    background: var(--hover);
+    transform: translateY(-2px);
 }
 
 .separator:active {
-    background: #e0e0e0;
+    background: var(--active);
+    cursor: grabbing;
+    transform: none;
 }
 
-label {
+.separator:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
+}
+
+.separator-caption {
     display: block;
-    margin-top: 10px;
+    margin-top: 8px;
     font-size: 0.9em;
+    color: var(--fg);
+}
+
+/* What each style is meant for, below its name */
+.separator-use {
+    display: block;
+    font-size: 0.8em;
+    color: var(--muted);
+    opacity: 0.8;
+}
+
+/* Step-by-step guide, numbered with a counter so the numbers can be styled */
+.steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 0;
+    padding: 0;
+}
+
+.steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 0 0 16px 40px;
+}
+
+.steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--fg);
+    line-height: 24px;
+    text-align: center;
+    font-size: 0.85em;
+}
+
+/* Repair tip below the guide */
+.tip {
+    margin: 4px 0 40px;
+    padding-left: 40px;
+    color: var(--muted);
+}
+
+.tip strong {
+    color: var(--fg);
+}
+
+.step-title {
+    display: block;
+    font-weight: bold;
+}
+
+.step-detail {
+    display: block;
+    color: var(--muted);
+}
+
+kbd {
+    font-family: inherit;
+    font-size: 0.9em;
+    padding: 1px 6px;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    color: var(--fg);
 }
 
 /* Documentation sections */
 details {
     margin: 20px 0;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--border);
     padding-top: 10px;
 }
 
@@ -77,33 +205,31 @@ summary {
     padding: 5px 0;
 }
 
-details p {
-    margin: 8px 0;
-}
-
-details a {
-    color: #000;
-    text-decoration: underline;
-}
-
-details a:hover {
-    color: #666;
-}
-
-
-/* Summary hover effect */
 summary:hover {
     text-decoration: underline;
 }
 
-
-/* Standard link color */
-a {
-    color: #0000ee;
+details p {
+    margin: 8px 0;
 }
 
+details a,
+details a:visited {
+    color: var(--fg);
+    text-decoration: underline;
+}
 
-/* Visited link color */
-a:visited {
-    color: #551a8b;
+details a:hover {
+    color: var(--muted);
+}
+
+/* Respect the system setting for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .separator {
+        transition: none;
+    }
+
+    .separator:hover {
+        transform: none;
+    }
 }
