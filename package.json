@@ -1,0 +1,28 @@
+{
+  "name": "bookmark-separator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Add separators to your bookmarks bar in Chrome, Edge and Brave.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "mkdir -p dist/images && html-minifier-terser --collapse-whitespace --remove-comments --minify-css true src/index.html -o dist/index.html && terser src/script.js --compress --mangle --comments false -o dist/script.js && cleancss -o dist/style.css src/style.css && cp src/images/*.png dist/images/",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "lint:html": "html-validate src/index.html",
+    "lint:css": "stylelint src/style.css",
+    "lint:js": "eslint src tests playwright.config.js eslint.config.js",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.1",
+    "clean-css-cli": "5.6.3",
+    "eslint": "10.9.0",
+    "globals": "17.11.0",
+    "html-minifier-terser": "7.2.0",
+    "html-validate": "11.9.0",
+    "stylelint": "17.14.1",
+    "stylelint-config-standard": "40.0.0",
+    "terser": "5.50.0"
+  }
+}
