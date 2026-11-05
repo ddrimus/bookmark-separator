@@ -1,0 +1,84 @@
+name: "GitHub Pages: Build & Deploy"
+# Deploy on main when the site or its build tools change, plus manual dispatch
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - package.json
+      - package-lock.json
+      - .github/workflows/github-pages-build-deploy.yml
+  workflow_dispatch:
+
+# No default permissions, each job sets its own
+permissions: {}
+
+# Queue deploys instead of cancelling one halfway through
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Minify & Upload Site
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      # Shallow, credential-less checkout; nothing here needs git history or push access
+      - name: Checkout repository source code (read-only)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      # Node.js for the minifiers, npm cache keyed on the lockfile
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # Build tools pinned in package-lock.json; install scripts skipped since none of them need one
+      - name: Install build dependencies
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+
+      # Same build script as package.json, so a local npm run build gives the same dist/
+      - name: Minify HTML, CSS & JavaScript
+        run: |
+          set -euo pipefail
+          npm run build
+
+      # Enables Pages for the repository if needed and reads its settings
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      # Only the minified dist/ is published, the readable source stays in the repository
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs:
+      - build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # Deploy rights live only here, so the npm packages in the build job never run with them
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # Publishes the artifact uploaded by the build job
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
