@@ -1,0 +1,60 @@
+name: "JavaScript: Test Suite"
+# Run on every PR and on main, plus manual dispatch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+# No default permissions, each job sets its own
+permissions: {}
+
+# Cancel a superseded run on the same ref
+concurrency:
+  group: javascript-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Lint with ESLint, Stylelint & html-validate & Run Tests with Playwright
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      # Shallow, credential-less checkout; nothing here needs git history or push access
+      - name: Checkout repository source code (read-only)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      # Same Node.js version as the deploy workflow, npm cache keyed on the lockfile
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # Linters and Playwright, pinned in package-lock.json; install scripts skipped since none of them need one
+      - name: Install test dependencies
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+
+      # Same rules as the config files in the repository root, so a local npm run lint gives the same result
+      - name: Lint with ESLint, Stylelint & html-validate
+        run: |
+          set -euo pipefail
+          npm run lint
+
+      # No browser download, the tests use the Google Chrome preinstalled on the runner; its version is printed since it isn't pinned
+      - name: Run tests with Playwright
+        run: |
+          set -euo pipefail
+          google-chrome --version
+          npm test
