@@ -1,58 +1,53 @@
 # Bookmark Separator
 
-A minimal tool for creating drag-and-drop bookmark separators with visual icons. Generate vertical (|) and horizontal (—) separators that maintain distinct favicons across all browsers.
+A minimal web tool to add visual separators to the bookmarks bar in Chrome, Edge and Brave. Easily added by drag and drop, without installing any browser extension.
+
+<p>
+  <a href="https://github.com/ddrimus/bookmark-separator/actions/workflows/javascript-test-suite.yml"><img src="https://img.shields.io/github/actions/workflow/status/ddrimus/bookmark-separator/javascript-test-suite.yml?branch=main&label=Test%20Suite&labelColor=404951" alt="Test Suite"></a>
+  <a href="https://github.com/ddrimus/bookmark-separator/actions/workflows/github-pages-build-deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/ddrimus/bookmark-separator/github-pages-build-deploy.yml?branch=main&label=Site%20Build&labelColor=404951" alt="Site Build"></a>
+</p>
 
 ## Features
 
-**🎯 Core**: Pure vanilla JavaScript, SVG favicons, zero dependencies, self-hostable.
+- Five separator styles: vertical, horizontal, double, dot and blank.
+- Unlimited separators, each with its own icon.
+- Restore a missing icon by clicking the separator.
+- Static page, easy to host yourself.
 
-**🔄 Smart URLs**: Unique URL generation prevents browser caching conflicts, supports multiple separators.
+## Browser Support
 
-**🎨 Visual**: Distinct vertical and horizontal icons, persistent favicons, minimalist design.
+Works in Chrome, Edge and Brave, which don't have built-in separators. Firefox and Vivaldi already support them from the bookmarks bar context menu. Safari isn't supported because it doesn't show icons in the Favorites bar.
 
-## Quick Start
+## Installation
 
-### Option 1: Use Hosted Version
+### Hosted Version
 
-Visit the live demo and drag separators to your bookmarks bar:
+1. Open **[ddrimus.github.io/bookmark-separator](https://ddrimus.github.io/bookmark-separator/)**.
+2. Show the bookmarks bar with `Ctrl` + `Shift` + `B` (`⌘` + `Shift` + `B` on macOS).
+3. Drag a separator onto the bar.
+4. If a name shows up next to the icon, right-click the bookmark, choose **Edit** and clear the name.
 
-**[https://ddrimus.github.io/bookmark-separator/](https://ddrimus.github.io/bookmark-separator/)**
-
-### Option 2: Self-Host on GitHub Pages
-
-Fork and deploy your own instance:
+### Self-Host
 
 1. Fork this repository.
-2. Go to **Settings** → **Pages**.
-3. Set **Source** to **GitHub Actions**.
-4. Push to `main` branch - deploys automatically.
-
-Access at `https://<username>.github.io/bookmark-separator/`.
-
-### Option 3: Run Locally
-
-Clone and open in your browser:
-
-```bash
-git clone https://github.com/ddrimus/bookmark-separator.git
-cd bookmark-separator/src
-```
-
-Open `index.html` in any browser. No server required.
+2. Go to **Settings** → **Pages** and set **Source** to **GitHub Actions**.
+3. Update the `og:url` and `og:image` addresses in `src/index.html` to your copy.
+4. Push to the `main` branch, the site deploys automatically.
 
 ## How It Works
 
-Each separator uses a unique URL with query parameters (`?vert` or `?horz`) and hash fragments. When dragged, a random UUID is generated and the favicon updates to match the separator type. Your browser caches the favicon per URL, allowing multiple bookmarks with distinct icons.
-
-## Deployment
-
-The repository includes a GitHub Actions workflow that automatically:
-- Minifies HTML, CSS, and JavaScript on push to `main`.
-- Deploys optimized version to GitHub Pages.
-- Keeps source code clean and readable in the repository.
+Each separator is a link to the page with its style and a random ID, for example `?dot#<uuid>`. When you drag it, the page updates its favicon to match the style and the browser saves that icon for the bookmark.
 
 ## Contributing
 
-If you have any improvements, additional information, or notice any issues with the tool, we'd love to hear from you! Feel free to open a pull request with your suggestions or details.
+If you have any improvements, additional information, or notice any issues with the Bookmark Separator, we'd love to hear from you! Feel free to open a pull request with your suggestions or details.
 
-If you encounter any problems or believe something isn't working as expected, please provide all relevant information in an issue.
+To run lint and tests locally (requires Google Chrome and Python 3):
+
+```bash
+npm ci
+npm run lint
+npm test
+```
+
+If you encounter any problems with the tool or believe something isn’t working as expected, please provide all relevant information in an [issue](https://github.com/ddrimus/bookmark-separator/issues), including your browser and its version. Your contributions, suggestions, and feedback are always welcome and appreciated!
